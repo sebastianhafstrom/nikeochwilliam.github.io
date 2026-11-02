@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F8F4EF">
-    <title>Nike och Williams bröllop 1 maj 2027</title>
+    <title>Sidan är låst</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
@@ -97,10 +97,52 @@
         border-bottom: 1px solid #d8d1c9;
         padding-bottom: 0.5rem;
       }
+
+      .password-gate {
+        max-width: 440px;
+        text-align: center;
+      }
+
+      .password-gate h1 {
+        font-size: 2.4rem;
+      }
+
+      .password-gate label {
+        display: block;
+        margin-top: 1.5rem;
+      }
+
+      .password-gate input,
+      .password-gate button {
+        width: 100%;
+        margin-top: 0.75rem;
+        padding: 0.65rem;
+        border: 1px solid #718896;
+        border-radius: 4px;
+        font: inherit;
+      }
+
+      .password-gate button {
+        background: #545454;
+        color: #F8F4EF;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
-    <main>
+    <main class="password-gate" id="password-gate">
+      <h1>Sidan är låst</h1>
+      <p>Ange lösenordet för att öppna sidan.</p>
+      <form id="password-form">
+        <label for="site-password">Lösenord</label>
+        <input id="site-password" type="password" autocomplete="current-password" required aria-describedby="password-error">
+        <button id="unlock-button" type="submit" disabled>Öppna sidan</button>
+        <p id="password-error" role="status"></p>
+      </form>
+      <noscript><p>Du behöver aktivera JavaScript för att öppna sidan.</p></noscript>
+    </main>
+    <template id="site-content">
+      <main id="wedding-content" tabindex="-1">
       <header class="invitation">
         <h1>Nike och Williams bröllop<br>1 maj 2027</h1>
         <img class="hero-photo" src="https://github.com/user-attachments/assets/3a540089-1c3e-433c-99c3-caa332d62cb0" alt="Två personer på en snötäckt fjälltopp">
@@ -131,6 +173,37 @@
         <p><strong>Presenter:</strong> Vi är otroligt tacksamma för att ni vill fira denna dag med oss – den största gåvan är att ni är med. Om ni vill uppmärksamma oss tar vi tacksamt emot bidrag till vår bröllopsresa (se Swish-insamlingen på inbjudan). Vi tycker också om vackra och praktiska ting från KitchenLab, Svenskt Tenn, Wira Bruk och Rörstrand. Upplevelser, gärna sportiga och tillsammans med er, är också uppskattade!</p>
         <p><strong>Barn:</strong> Information kommer senare.</p>
       </section>
-    </main>
+      </main>
+    </template>
+    <script>
+      const SITE_PASSWORD = "snart2027";
+      const form = document.getElementById("password-form");
+      const password = document.getElementById("site-password");
+      const error = document.getElementById("password-error");
+
+      document.getElementById("unlock-button").disabled = false;
+
+      password.addEventListener("input", () => {
+        password.removeAttribute("aria-invalid");
+        error.textContent = "";
+      });
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (password.value !== SITE_PASSWORD) {
+          error.textContent = "Fel lösenord. Försök igen.";
+          password.setAttribute("aria-invalid", "true");
+          password.focus();
+          return;
+        }
+
+        const content = document.getElementById("site-content");
+        document.getElementById("password-gate").replaceWith(content.content.cloneNode(true));
+        content.remove();
+        document.title = "Nike och Williams bröllop 1 maj 2027";
+        document.getElementById("wedding-content").focus();
+      });
+    </script>
   </body>
 </html>
