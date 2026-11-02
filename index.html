@@ -177,9 +177,18 @@
     </template>
     <script>
       const SITE_PASSWORD = "snart2027";
+      const UNLOCK_STORAGE_KEY = "wedding-site-unlocked";
       const form = document.getElementById("password-form");
       const password = document.getElementById("site-password");
       const error = document.getElementById("password-error");
+
+      function unlockSite() {
+        const content = document.getElementById("site-content");
+        document.getElementById("password-gate").replaceWith(content.content.cloneNode(true));
+        content.remove();
+        document.title = "Nike och Williams bröllop 1 maj 2027";
+        document.getElementById("wedding-content").focus();
+      }
 
       document.getElementById("unlock-button").disabled = false;
 
@@ -198,12 +207,21 @@
           return;
         }
 
-        const content = document.getElementById("site-content");
-        document.getElementById("password-gate").replaceWith(content.content.cloneNode(true));
-        content.remove();
-        document.title = "Nike och Williams bröllop 1 maj 2027";
-        document.getElementById("wedding-content").focus();
+        try {
+          localStorage.setItem(UNLOCK_STORAGE_KEY, "true");
+        } catch {
+          // Allow access even when the browser cannot remember it.
+        }
+        unlockSite();
       });
+
+      try {
+        if (localStorage.getItem(UNLOCK_STORAGE_KEY) === "true") {
+          unlockSite();
+        }
+      } catch {
+        // Keep password entry available when browser storage is blocked.
+      }
     </script>
   </body>
 </html>
